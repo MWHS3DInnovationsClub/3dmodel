@@ -60,12 +60,12 @@ SOUND_MAPPING = {
   7: 'cwinggym.m4a',
   8: 'specgym.m4a',
   9: 'hwing.m4a',
-  10: 'lwing.m4a',
-  11: 'gwing.m4a',
+  10: 'swimmingpool.m4a',
+  11: 'rotunda.m4a',
 }
 
 LIGHT_MAPPING = {
-  0: 4,
+  0: 21,
   1: 17,
   2: 27,
   3: 5,
