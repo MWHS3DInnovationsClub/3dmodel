@@ -108,7 +108,7 @@ while True:
         # First check if transitioned from not touched to touched.
         if current_touched & pin_bit and not last_touched & pin_bit:
             print('{0} touched!'.format(i))
-            if i == k
+            if i == k:
                 if __name__ == '__main__':
                 p1 = Process(target = light, args = (i,))
                 p1.start()
