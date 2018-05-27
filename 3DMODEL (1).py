@@ -79,25 +79,65 @@ LIGHT_MAPPING = {
   11: 25,
 }
 
+globalPin = -1
+
 def light(pin):
     gp = LIGHT_MAPPING[pin]
+    globalPin = pin
     GPIO.setup(gp,GPIO.OUT)
     print "LED on"
     GPIO.output(gp,GPIO.HIGH)
 
 def sound(pin):
-    os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/' + SOUND_MAPPING[pin])
+    gp = LIGHT_MAPPING[pin]
+    GPIO.setup(gp, GPIO.OUT)
+    os.system('omxplayer --threshold 0 -o both /home/pi/Music/' + SOUND_MAPPING[pin])
     print"LED off"
     GPIO.output(gp,GPIO.LOW)
 
 def sound2(pin):
-    os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/low' + SOUND_MAPPING[pin])
+    gp = LIGHT_MAPPING[pin]
+    GPIO.setup(gp, GPIO.OUT)
+    os.system('omxplayer --threshold 0 -o both /home/pi/Music/low' + SOUND_MAPPING[pin])
     print"LED off"
     GPIO.output(gp,GPIO.LOW)
 
+def sound3(pin):
+   gp = LIGHT_MAPPING[pin]
+   GPIO.setup(gp, GPIO.OUT)
+   os.system('omxplayer --threshold 0 -o both /home/pi/Music/ss' + SOUND_MAPPING[pin])
+   print"LED off"
+   GPIO.output(gp,GPIO.LOW)
+
+last_touched = cap.touched()
+#def checkpress():
+#	while True:
+#		current_touched = cap.touched()
+#		for i in range(12):
+#			pin_bit = 1 << i
+#			if current_touched & pin_bit and not last_touched & pin_bit:
+#				os.system('killall omxplayer.bin')
+#				if globalPin != i:
+#					k = - 1
+#					j = - 1
+#				else:
+#					if j != i  and k != i :
+#						j = i
+#					elif k!=i:
+#						k = i
+#					else:
+#						k = - 1
+#						j = - 1
+#if __name__ == '__main__':
+#	p3 = Process(target = checkpress, args = ())
+#	p3.start()
+#	p3.join()
+
+			
+k = - 1
+j = -1
 # Main loop to print a message every time a pin is touched.
 print('Press Ctrl-C to quit.')
-last_touched = cap.touched()
 while True:
     current_touched = cap.touched()
     # Check each pin's last and current state to see if it was pressed or released.
@@ -105,29 +145,44 @@ while True:
         # Each pin is represented by a bit in the touched value.  A value of 1
         # means the pin is being touched, and 0 means it is not being touched.
         pin_bit = 1 << i
-        # First check if transitioned from not touched to touched.
-        if current_touched & pin_bit and not last_touched & pin_bit:
-            print('{0} touched!'.format(i))
-            if i == k
-                if __name__ == '__main__':
-                p1 = Process(target = light, args = (i,))
-                p1.start()
-                p2 = Process(target = sound2, args = (i,))
-                p2.start()
-                k = -1
-            else
-                if __name__ == '__main__':
-                    p1 = Process(target = light, args = (i,))
-                    p1.start()
-                    p2 = Process(target = sound, args = (i,))
-                    p2.start()
-                if i in [0,1,2,4]
-                    k = i
-                else
-                    k = -1
-                os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/more.mp3')
-        if not current_touched & pin_bit and last_touched & pin_bit:
-            print('{0} released!'.format(i))
+	# First check if transitioned from not touched to touched.
+	if current_touched & pin_bit and not last_touched & pin_bit:
+       		print('{0} touched!'.format(i))
+		if  i != j  and k == -1:
+	        	if __name__ == '__main__':
+                                p1 = Process(target = light, args = (i,))
+                                p1.start()
+                                p2 = Process(target = sound3, args = (i,))
+                                p2.start()
+                                j = i
+                                p1.join()
+                                p2.join()
+                                os.system('omxplayer --threshold 0 -o both /home/pi/Music/more.mp3')		
+		elif i == k:
+                	if __name__ == '__main__':
+                    		p1 = Process(target = light, args = (i,))
+                    		p1.start()
+                    		p2 = Process(target = sound2, args = (i,))
+                    		p2.start()
+                	    	k = -1
+				p1.join()
+				p2.join()
+		else:
+                	if __name__ == '__main__':
+                    		p1 = Process(target = light, args = (i,))
+                   		p1.start()
+                   	 	p2 = Process(target = sound, args = (i,))
+                   		p2.start()
+				p1.join()
+				p2.join()
+				j = - 1
+                	if i in [0,1,2,4]:
+                		k = i
+				os.system('omxplayer --threshold 0 -o both /home/pi/Music/more.mp3')			
+                	else:
+                		k = -1
+	if not current_touched & pin_bit and last_touched & pin_bit:
+		print('{0} released!'.format(i))
 
     # Update last state and wait a short period before repeating.
     last_touched = current_touched

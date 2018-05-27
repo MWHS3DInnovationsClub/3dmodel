@@ -23,6 +23,7 @@ import time
 import RPi.GPIO as GPIO
 import os
 import Adafruit_MPR121.MPR121 as MPR121
+import random
 from multiprocessing import Process
 
 # Thanks to Scott Garner & BeetBox!
@@ -79,56 +80,59 @@ LIGHT_MAPPING = {
   11: 25,
 }
 
+    
 def light(pin):
     gp = LIGHT_MAPPING[pin]
     GPIO.setup(gp,GPIO.OUT)
+
     print "LED on"
     GPIO.output(gp,GPIO.HIGH)
 
 def sound(pin):
-    os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/' + SOUND_MAPPING[pin])
-    print"LED off"
-    GPIO.output(gp,GPIO.LOW)
-
-def sound2(pin):
-    os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/low' + SOUND_MAPPING[pin])
-    print"LED off"
-    GPIO.output(gp,GPIO.LOW)
-
+    gp = LIGHT_MAPPING[pin]
+    GPIO.setup(gp,GPIO.OUT)
+    os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/ss' + SOUND_MAPPING[pin])
+    
 # Main loop to print a message every time a pin is touched.
 print('Press Ctrl-C to quit.')
 last_touched = cap.touched()
 while True:
     current_touched = cap.touched()
+    if random.randrange(1, 12, 1) < 6:
+        lightpin = random.randrange(0, 11, 1)
+        soundpin = lightpin
+    else:
+        lightpin = random.randrange(0, 11, 1)
+        soundpin = random.randrange(0, 11, 1)
+    
+    light(lightpin)
+    sound(soundpin)
+    
+        
     # Check each pin's last and current state to see if it was pressed or released.
-    for i in range(12):
-        # Each pin is represented by a bit in the touched value.  A value of 1
-        # means the pin is being touched, and 0 means it is not being touched.
-        pin_bit = 1 << i
-        # First check if transitioned from not touched to touched.
-        if current_touched & pin_bit and not last_touched & pin_bit:
-            print('{0} touched!'.format(i))
-            if i == k
-                if __name__ == '__main__':
-                p1 = Process(target = light, args = (i,))
-                p1.start()
-                p2 = Process(target = sound2, args = (i,))
-                p2.start()
-                k = -1
-            else
-                if __name__ == '__main__':
-                    p1 = Process(target = light, args = (i,))
-                    p1.start()
-                    p2 = Process(target = sound, args = (i,))
-                    p2.start()
-                if i in [0,1,2,4]
-                    k = i
-                else
-                    k = -1
-                os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/more.mp3')
-        if not current_touched & pin_bit and last_touched & pin_bit:
-            print('{0} released!'.format(i))
-
-    # Update last state and wait a short period before repeating.
-    last_touched = current_touched
-    time.sleep(0.1)
+    for x in range(100):
+        for i in range(12):
+            # Each pin is represented by a bit in the touched value.  A value of 1
+            # means the pin is being touched, and 0 means it is not being touched.
+            pin_bit = 1 << i
+            # First check if transitioned from not touched to touched.
+            if current_touched & pin_bit and not last_touched & pin_bit:
+                print('{0} touched!'.format(i))
+                if lightpin == soundpin:
+                    if i == lightpin:
+                        os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/chime.mp3')
+                        print "LED off"
+                        GPIO.setup(lightpin,GPIO.OUT)
+                        GPIO.output(lightpin,GPIO.LOW)
+                else:
+                    os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/buzz.mp3')
+                    GPIO.setup(lightpin,GPIO.OUT)
+                    GPIO.output(lightpin,GPIO.LOW)
+                break
+    
+            if not current_touched & pin_bit and last_touched & pin_bit:
+                print('{0} released!'.format(i))
+    
+        # Update last state and wait a short period before repeating.
+        last_touched = current_touched
+        time.sleep(0.1)

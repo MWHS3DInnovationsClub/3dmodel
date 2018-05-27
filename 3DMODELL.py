@@ -23,7 +23,6 @@ import time
 import RPi.GPIO as GPIO
 import os
 import Adafruit_MPR121.MPR121 as MPR121
-from multiprocessing import Process
 
 # Thanks to Scott Garner & BeetBox!
 # https://github.com/scottgarner/BeetBox/
@@ -50,18 +49,18 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 SOUND_MAPPING = {
-  0: 'awing.m4a',
-  1: 'bwing.m4a',
-  2: 'cwing.m4a',
-  3: 'dwing.m4a',
-  4: 'ewing.m4a',
-  5: 'awinggym.m4a',
-  6: 'bwinggym.m4a',
-  7: 'cwinggym.m4a',
-  8: 'specgym.m4a',
-  9: 'hwing.m4a',
-  10: 'swimmingpool.m4a',
-  11: 'rotunda.m4a',
+  0: '/home/pi/Music/awing.m4a',
+  1: '/home/pi/Music/bwing.m4a',
+  2: '/home/pi/Music/cwing.m4a',
+  3: '/home/pi/Music/dwing.m4a',
+  4: '/home/pi/Music/ewing.m4a',
+  5: '/home/pi/Music/bwinggym.m4a',
+  6: '/home/pi/Music/awinggym.m4a',
+  7: '/home/pi/Music/cwinggym.m4a',
+  8: '/home/pi/Music/specgym.m4a',
+  9: '/home/pi/Music/hwing.m4a',
+  10: '/home/pi/Music/swimmingpool.m4a',
+  11: '/home/pi/Music/rotunda.m4a',
 }
 
 LIGHT_MAPPING = {
@@ -79,21 +78,15 @@ LIGHT_MAPPING = {
   11: 25,
 }
 
-def light(pin):
+def lightsound (pin):
     gp = LIGHT_MAPPING[pin]
     GPIO.setup(gp,GPIO.OUT)
     print "LED on"
     GPIO.output(gp,GPIO.HIGH)
-
-def sound(pin):
-    os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/' + SOUND_MAPPING[pin])
+    os.system('omxplayer --threshold 0 -o both ' + SOUND_MAPPING[pin])
     print"LED off"
-    GPIO.output(gp,GPIO.LOW)
+    GPIO.output(gp,GPIO.LOW)    
 
-def sound2(pin):
-    os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/low' + SOUND_MAPPING[pin])
-    print"LED off"
-    GPIO.output(gp,GPIO.LOW)
 
 # Main loop to print a message every time a pin is touched.
 print('Press Ctrl-C to quit.')
@@ -108,24 +101,7 @@ while True:
         # First check if transitioned from not touched to touched.
         if current_touched & pin_bit and not last_touched & pin_bit:
             print('{0} touched!'.format(i))
-            if i == k
-                if __name__ == '__main__':
-                p1 = Process(target = light, args = (i,))
-                p1.start()
-                p2 = Process(target = sound2, args = (i,))
-                p2.start()
-                k = -1
-            else
-                if __name__ == '__main__':
-                    p1 = Process(target = light, args = (i,))
-                    p1.start()
-                    p2 = Process(target = sound, args = (i,))
-                    p2.start()
-                if i in [0,1,2,4]
-                    k = i
-                else
-                    k = -1
-                os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/more.mp3')
+            lightsound(i)
         if not current_touched & pin_bit and last_touched & pin_bit:
             print('{0} released!'.format(i))
 

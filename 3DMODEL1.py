@@ -60,18 +60,18 @@ SOUND_MAPPING = {
   7: 'cwinggym.m4a',
   8: 'specgym.m4a',
   9: 'hwing.m4a',
-  10: 'swimmingpool.m4a',
-  11: 'rotunda.m4a',
+  10: 'lwing.m4a',
+  11: 'gwing.m4a',
 }
 
 LIGHT_MAPPING = {
-  0: 21,
+  0: 4,
   1: 17,
   2: 27,
   3: 5,
   4: 22,
-  5: 13,
-  6: 6,
+  5: 6,
+  6: 13,
   7: 26,
   8: 18,
   9: 23,
@@ -84,16 +84,16 @@ def light(pin):
     GPIO.setup(gp,GPIO.OUT)
     print "LED on"
     GPIO.output(gp,GPIO.HIGH)
-
+    
 def sound(pin):
     os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/' + SOUND_MAPPING[pin])
     print"LED off"
     GPIO.output(gp,GPIO.LOW)
-
+    
 def sound2(pin):
     os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/low' + SOUND_MAPPING[pin])
     print"LED off"
-    GPIO.output(gp,GPIO.LOW)
+    GPIO.output(gp,GPIO.LOW)    
 
 # Main loop to print a message every time a pin is touched.
 print('Press Ctrl-C to quit.')
@@ -109,14 +109,14 @@ while True:
         if current_touched & pin_bit and not last_touched & pin_bit:
             print('{0} touched!'.format(i))
             if i == k
-                if __name__ == '__main__':
+                if __name__ == '__main__': 
                 p1 = Process(target = light, args = (i,))
                 p1.start()
                 p2 = Process(target = sound2, args = (i,))
                 p2.start()
                 k = -1
             else
-                if __name__ == '__main__':
+                if __name__ == '__main__': 
                     p1 = Process(target = light, args = (i,))
                     p1.start()
                     p2 = Process(target = sound, args = (i,))
@@ -125,10 +125,10 @@ while True:
                     k = i
                 else
                     k = -1
-                os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/more.mp3')
+                os.system('omxplayer --threshold 0 -o hdmi /home/pi/Music/more.mp3')              
         if not current_touched & pin_bit and last_touched & pin_bit:
             print('{0} released!'.format(i))
-
+            
     # Update last state and wait a short period before repeating.
     last_touched = current_touched
     time.sleep(0.1)
